@@ -8,6 +8,10 @@ from tqdm import tqdm
 from text import _clean_text
 
 
+def listdir_nohidden(path):
+    return [f for f in os.listdir(path) if not f.startswith('.')]
+
+
 def prepare_align(config):
     in_dir = config["path"]["corpus_path"]
     out_dir = config["path"]["raw_path"]
@@ -17,8 +21,8 @@ def prepare_align(config):
     sampling_rate = config["preprocessing"]["audio"]["sampling_rate"]
     max_wav_value = config["preprocessing"]["audio"]["max_wav_value"]
     cleaners = config["preprocessing"]["text"]["text_cleaners"]
-    for spker_id, speaker in enumerate(tqdm(os.listdir(txt_dir))):
-        for i, txt_name in enumerate(tqdm(os.listdir(os.path.join(txt_dir, speaker)))):
+    for spker_id, speaker in enumerate(tqdm(listdir_nohidden(txt_dir))):
+        for i, txt_name in enumerate(tqdm(listdir_nohidden(os.path.join(txt_dir, speaker)))):
             base_name = txt_name.split(".")[0]
             base_name_out = base_name.replace('_', '-')
             with open(os.path.join(txt_dir, speaker, txt_name), "r") as f:
